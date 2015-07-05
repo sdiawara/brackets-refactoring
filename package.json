@@ -1,0 +1,16 @@
+{
+  "name": "brackets-refactoring",
+  "version": "0.0.1",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "jasmine-node --matchall unittests.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "jasmine-node": "^1.14.5"
+  }
+}
