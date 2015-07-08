@@ -1,4 +1,4 @@
-/*global define, $, brackets, describe, it, expect, beforeFirst, afterLast, beforeEach, afterEach, runs, waitsFor, waitsForDone, waitsForFail, xit */
+/*global define, $, brackets, describe, it, expect, beforeFirst, afterLast, beforeEach, afterEach, runs, waitsFor, waitsForDone, waitsForFail*/
 
 define(function (require, exports, module) {
     "use strict";
@@ -13,7 +13,6 @@ define(function (require, exports, module) {
 
             this.PM = t.ProjectManager;
             this.DM = t.DocumentManager;
-            this.Menus = require('Menus');
             this.target = req("main");
         });
     });
@@ -25,11 +24,6 @@ define(function (require, exports, module) {
     describe('sdiawara.Refactoring', function () {
         it('should expose a extractVariable method', function () {
             expect(this.target.extractVariable).not.toBeNull();
-        });
-        
-        it('should have menu inline.variable', function () {
-            expect(this.Menus.getMenu('inline.variable')).not.toBeNull();
-            expect(this.Menus.getMenu('inline.variable')).not.toBe(undefined);
         });
     });
 });

@@ -1,17 +1,15 @@
-/*jslint vars: true*/
 /*global define, $, brackets, window*/
 
 define(function (require, exports, module) {
     'use strict';
-    var AppInit = brackets.getModule('utils/AppInit');
-    var Menus = brackets.getModule('command/Menus');
-    var Constants = require('src/Constants');
-    
-    Menus.addMenu(Constants.MENU_REFACTORING_NAME, Constants.MENU_REFACTORING_ID, Menus.BEFORE, 'debug-menu');
-    
-    var VariableExtractor = require('src/VariableExtractor');
-    
+    var AppInit         = brackets.getModule('utils/AppInit'),
+        Constants = require('src/Constants'),
+        VariableExtractor = require('src/VariableExtractor'),
+        MenuRefactoring = require('src/MenuRefactoring');
+
     AppInit.appReady(function () {
-        VariableExtractor.registry();
+        MenuRefactoring.register();
+        
+        MenuRefactoring.addItem(Constants.VARIABLE_EXTRACT_ITEM_NAME, Constants.VARIABLE_EXTRACT_ITEM_ID, Constants.VARIABLE_EXTRACT_ITEM_SHORTCUT, VariableExtractor.getHandler);
     });
 });
