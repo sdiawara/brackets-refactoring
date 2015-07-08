@@ -40,7 +40,7 @@ define(function (require, exports, module) {
 
     exports.registry = function () {
         CommandManager.register(Constants.VARIABLE_EXTRACT_ITEM_NAME, Constants.VARIABLE_EXTRACT_ITEM_ID, handler);
-        Menus.getMenu('sdiawara.refactoring').addMenuItem(Constants.VARIABLE_EXTRACT_ITEM_ID, Constants.VARIABLE_EXTRACT_ITEM_SHORTCUT);
+        Menus.getMenu(Constants.MENU_REFACTORING_ID).addMenuItem(Constants.VARIABLE_EXTRACT_ITEM_ID, Constants.VARIABLE_EXTRACT_ITEM_SHORTCUT);
     };
 });
 

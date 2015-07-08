@@ -1,8 +1,6 @@
 /*jslint vars: true*/
 /*global define, $, brackets, window*/
 
-
-
 define(function (require, exports, module) {
     'use strict';
     var AppInit = brackets.getModule('utils/AppInit');
