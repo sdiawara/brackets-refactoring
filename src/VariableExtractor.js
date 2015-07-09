@@ -17,6 +17,12 @@ define(function (require, exports, module) {
         }
     }
     
+    function assertNotStartOrEndWithDot(text) {
+        if (/^\./.test(text) || /\.$/.test(text)) {
+            throw 'Variable can not start or end with dot';
+        }
+    }
+    
     exports.getHandler = function () {
         var editor = EditorManager.getCurrentFullEditor();
         var selectedText = editor.getSelectedText();
@@ -24,6 +30,7 @@ define(function (require, exports, module) {
         try {
             assertNotEmpty(selectedText);
             assertNotVariableDeclaration(selectedText);
+            assertNotStartOrEndWithDot(selectedText);
         } catch (exception) {
             editor.displayErrorMessageAtCursor(exception);
             return;
