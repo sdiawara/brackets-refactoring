@@ -7,3 +7,6 @@
 - Show function parameters
 - Jumps to definition (function/variable)
 - Quick declaration of function
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/sdiawara/brackets-refactoring/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
