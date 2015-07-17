@@ -36,15 +36,8 @@ define(function (require, exports, module) {
             throw 'Can not perform refactoring\nSelected block should represent expression';
         }
 
-        var restOfExpression = line.substring(indexOfText + text.length, line.length);
-
-        if (/^\(\w*\);$/.test(restOfExpression)) {
-            textToReplace = textToReplace + restOfExpression;
-            textToReplace = textToReplace.replace(';', '');
-        }
-        
         if (/\./.test(line.charAt(indexOfText - 1))) {
-            var words = line.split(/(\.|\()/).reverse();
+            var words = line.split(/(\.|\(|\s)/).reverse();
             var index;
             var replacement = text;
             for (index = words.indexOf(text) + 1; index < words.length; index = index + 2) {
@@ -56,8 +49,16 @@ define(function (require, exports, module) {
             }
             textToReplace = replacement;
         }
+        
+        indexOfText = line.indexOf(textToReplace);
+        var restOfExpression = line.substring(indexOfText + textToReplace.length, line.length);
 
-        return line.replace(textToReplace, 'extracted');
+        if (/^\([\w\W]*\);$/.test(restOfExpression)) {
+            textToReplace = textToReplace + restOfExpression;
+            textToReplace = textToReplace.replace(';', '');
+        }
+
+        return { declaration :  'var extracted = ' + textToReplace + ';', newLine :  line.replace(textToReplace, 'extracted')};
     }
     
     exports.extract = extract;
@@ -65,30 +66,25 @@ define(function (require, exports, module) {
     exports.getHandler = function () {
         var editor = EditorManager.getCurrentFullEditor();
         var selectedText = editor.getSelectedText();
-        
+        var selection = editor.getSelection();
+        var document = editor.document;
+
+        var originalLine = document.getLine(selection.start.line);
+        var numSpaces = originalLine.length - originalLine.trimLeft().length;
+
+        var extraction;
         try {
-            assertNotEmpty(selectedText);
-            assertNotVariableDeclaration(selectedText);
-            assertNotStartOrEndWithDot(selectedText);
+            extraction = extract(originalLine, selectedText);
         } catch (exception) {
             editor.displayErrorMessageAtCursor(exception);
             return;
         }
-        
-        var document = editor.document;
-        var selection = editor.getSelection();
 
-        var originalLine = document.getLine(selection.start.line);
-        var lineText = originalLine.trimLeft();
-        var numSpaces = originalLine.length - lineText.length;
-        var indent = originalLine.substr(0, numSpaces);
-        var newStart = {ch : 0, line : selection.start.line };
-
-        var variableDeclaration = 'var extracted = ' + selectedText + ';\n';
-
+        var newStart = {ch : numSpaces, line : selection.start.line };
         document.batchOperation(function () {
-            document.replaceRange(indent + variableDeclaration, newStart);
-            document.replaceRange('extracted', editor.getSelection().start, editor.getSelection().end);
+            console.log(extraction.declaration);
+            document.replaceRange(extraction.declaration + '\n', newStart);
+            document.replaceRange(extraction.newLine + '\n', {ch : 0, line : editor.getSelection().start.line}, {ch : originalLine.length, line : editor.getSelection().start.line});
 
             var cursorPos = {ch : numSpaces + 5, line : selection.start.line };
             editor.setCursorPos(cursorPos);
@@ -96,5 +92,3 @@ define(function (require, exports, module) {
         });
     };
 });
-
-

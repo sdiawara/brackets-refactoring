@@ -25,19 +25,36 @@ define(function (require, exports, module) {
         it('extract variabe used to call function', function () {
             var lineAfterExtract = variableExtractor.extract(declarationLine, 'toto');
             
-            expect(lineAfterExtract).toBe('var variable = extracted.getTata();');
+            expect(lineAfterExtract.declaration).toBe('var extracted = toto;');
+            expect(lineAfterExtract.newLine).toBe('var variable = extracted.getTata();');
         });
         
         it('extract function call', function () {
             var lineAfterExtract = variableExtractor.extract(declarationLine, 'toto.getTata');
             
-            expect(lineAfterExtract).toBe('var variable = extracted;');
+            expect(lineAfterExtract.declaration).toBe('var extracted = toto.getTata();');
+            expect(lineAfterExtract.newLine).toBe('var variable = extracted;');
+        }); 
+        
+        it('extract function call with parameters', function () {
+            var lineAfterExtract = variableExtractor.extract(declarationLineWithParameters, 'toto.getTata');
+            
+            expect(lineAfterExtract.declaration).toBe('var extracted = toto.getTata(coucou.hello.toc);');
+            expect(lineAfterExtract.newLine).toBe('var variable = extracted;');
         });
                 
         it('extract variable in chained expression', function () {
             var lineAfterExtract = variableExtractor.extract(declarationLineWithParameters, 'hello');
             
-            expect(lineAfterExtract).toBe('var variable = toto.getTata(extracted.toc);');
+            expect(lineAfterExtract.declaration).toBe('var extracted = coucou.hello;');
+            expect(lineAfterExtract.newLine).toBe('var variable = toto.getTata(extracted.toc);');
+        });  
+        
+        it('extract variable in chained expression', function () {
+            var lineAfterExtract = variableExtractor.extract(declarationLine, 'getTata');
+            
+            expect(lineAfterExtract.declaration).toBe('var extracted = toto.getTata();');
+            expect(lineAfterExtract.newLine).toBe('var variable = extracted;');
         });
         
         it('cant not extract declaration of variable', function () {
