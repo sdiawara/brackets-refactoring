@@ -23,6 +23,45 @@ define(function (require, exports, module) {
         }
     }
     
+    function extract(line, text) {
+        var textToReplace = text;
+        var indexOfText = line.indexOf(text);
+        var indexOfEqual = line.indexOf('=');
+    
+        if (indexOfEqual > indexOfText) {
+            throw 'Can not perform refactoring\nSelected block should represent expression';
+        }
+        
+        if (/\w/.test(line.charAt(indexOfText - 1)) || /\w/.test(line.charAt(indexOfText + text.length))) {
+            throw 'Can not perform refactoring\nSelected block should represent expression';
+        }
+
+        var restOfExpression = line.substring(indexOfText + text.length, line.length);
+
+        if (/^\(\w*\);$/.test(restOfExpression)) {
+            textToReplace = textToReplace + restOfExpression;
+            textToReplace = textToReplace.replace(';', '');
+        }
+        
+        if (/\./.test(line.charAt(indexOfText - 1))) {
+            var words = line.split(/(\.|\()/).reverse();
+            var index;
+            var replacement = text;
+            for (index = words.indexOf(text) + 1; index < words.length; index = index + 2) {
+                if (words[index] === '.') {
+                    replacement = words[index + 1] + '.' + replacement;
+                } else {
+                    break;
+                }
+            }
+            textToReplace = replacement;
+        }
+
+        return line.replace(textToReplace, 'extracted');
+    }
+    
+    exports.extract = extract;
+    
     exports.getHandler = function () {
         var editor = EditorManager.getCurrentFullEditor();
         var selectedText = editor.getSelectedText();
