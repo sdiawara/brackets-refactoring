@@ -4,6 +4,7 @@
 define(function (require, exports, module) {
     "use strict";
     var variableExtractor = require('src/VariableExtractor');
+    var StringUtils = require('src/StringUtils');
      
     describe('sdiawara.Refactoring', function () {
         var ERROR_MESSAGE = 'Can not perform refactoring\nSelected block should represent expression';
@@ -56,6 +57,23 @@ define(function (require, exports, module) {
             var message = tryExtract(declarationLine, 'toto.get');
             
             expect(message).toBe(ERROR_MESSAGE);
+        });
+    });
+
+    describe('sdiawara.StringUtils', function () {
+        it('get word at position', function () {
+            var sentence = new StringUtils.EString("Hello i am a sentence.");
+
+            expect(sentence.wordAt(0)).toBe('Hello');
+            expect(sentence.wordAt(4)).toBe('Hello');
+            expect(sentence.wordAt(15)).toBe('sentence');
+            expect(sentence.wordAt(17)).toBe('sentence');
+        });
+
+        it('separator is not word', function () {
+            var sentence = new StringUtils.EString("Hello i am a sentence.");
+
+            expect(sentence.wordAt(5)).toBe(null);
         });
     });
 });
